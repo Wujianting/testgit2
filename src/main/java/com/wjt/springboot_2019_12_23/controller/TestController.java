@@ -9,8 +9,8 @@ public class TestController {
     @GetMapping("/")
     public String test(){
         if(true){
-            /*throw new BusinessException("500","自定义异常500");*/
-            throw new RuntimeException();
+            throw new BusinessException("500","自定义异常500");
+            /*throw new RuntimeException();*/
         }
         return "index";
     }
