@@ -1,0 +1,225 @@
+Index: src/main/resources/templates/error500.ftl
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/resources/templates/error500.ftl	(date 1577072301155)
++++ src/main/resources/templates/error500.ftl	(date 1577072301155)
+@@ -0,0 +1,10 @@
++<!DOCTYPE html>
++<html lang="en">
++<head>   
++    <meta charset="UTF-8">   
++    <title>Title</title>
++</head>
++<body>
++    服务器异常
++</body>
++</html>
+\ No newline at end of file
+Index: src/main/java/com/wjt/springboot_2019_12_23/exception/MyControllerAdvice.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/java/com/wjt/springboot_2019_12_23/exception/MyControllerAdvice.java	(date 1577072815247)
++++ src/main/java/com/wjt/springboot_2019_12_23/exception/MyControllerAdvice.java	(date 1577072815247)
+@@ -0,0 +1,32 @@
++package com.wjt.springboot_2019_12_23.exception;
++
++import org.springframework.web.bind.annotation.ControllerAdvice;
++import org.springframework.web.bind.annotation.ExceptionHandler;
++import org.springframework.web.bind.annotation.RestControllerAdvice;
++
++import java.util.HashMap;
++import java.util.Map;
++
++/*@RestControllerAdvice*/
++@ControllerAdvice
++public class MyControllerAdvice {
++    /*@ExceptionHandler(value = Exception.class)
++    public Map<String,Object> errorHandler(Exception e){
++        Map<String,Object> map = new HashMap<>();
++        map.put("code",-1);
++        map.put("msg",e.getMessage());
++        return map;
++    }*/
++
++    @ExceptionHandler(value=BusinessException.class)
++    public Map<String,Object> errorHandler(BusinessException e){
++        Map<String,Object> map = new HashMap<>();
++        map.put("code",e.getCode());
++        map.put("msg",e.getMsg());
++        return map;
++    }
++    @ExceptionHandler(value = RuntimeException.class)
++    public String errorHandler(RuntimeException e){
++        return "error500";
++    }
++}
+Index: src/main/java/com/wjt/springboot_2019_12_23/config/TestConfig.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/java/com/wjt/springboot_2019_12_23/config/TestConfig.java	(date 1577068244290)
++++ src/main/java/com/wjt/springboot_2019_12_23/config/TestConfig.java	(date 1577068244290)
+@@ -0,0 +1,15 @@
++package com.wjt.springboot_2019_12_23.config;
++
++import org.springframework.context.annotation.Bean;
++import org.springframework.context.annotation.Configuration;
++
++import java.util.Date;
++
++@Configuration
++public class TestConfig {
++
++    @Bean
++    public Date getDate(){
++        return new Date();
++    }
++}
+Index: src/main/java/com/wjt/springboot_2019_12_23/controller/TestController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/java/com/wjt/springboot_2019_12_23/controller/TestController.java	(date 1577072301095)
++++ src/main/java/com/wjt/springboot_2019_12_23/controller/TestController.java	(date 1577072301095)
+@@ -0,0 +1,17 @@
++package com.wjt.springboot_2019_12_23.controller;
++
++import com.wjt.springboot_2019_12_23.exception.BusinessException;
++import org.springframework.web.bind.annotation.GetMapping;
++import org.springframework.web.bind.annotation.RestController;
++
++@RestController
++public class TestController {
++    @GetMapping("/")
++    public String test(){
++        if(true){
++            /*throw new BusinessException("500","自定义异常500");*/
++            throw new RuntimeException();
++        }
++        return "index";
++    }
++}
+Index: src/test/java/com/wjt/springboot_2019_12_23/Springboot20191223ApplicationTests.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/test/java/com/wjt/springboot_2019_12_23/Springboot20191223ApplicationTests.java	(date 1577067731848)
++++ src/test/java/com/wjt/springboot_2019_12_23/Springboot20191223ApplicationTests.java	(date 1577067731848)
+@@ -0,0 +1,13 @@
++package com.wjt.springboot_2019_12_23;
++
++import org.junit.jupiter.api.Test;
++import org.springframework.boot.test.context.SpringBootTest;
++
++@SpringBootTest
++class Springboot20191223ApplicationTests {
++
++    @Test
++    void contextLoads() {
++    }
++
++}
+Index: src/test/java/com/wjt/springboot_2019_12_23/test.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/test/java/com/wjt/springboot_2019_12_23/test.java	(date 1577068570419)
++++ src/test/java/com/wjt/springboot_2019_12_23/test.java	(date 1577068570419)
+@@ -0,0 +1,25 @@
++package com.wjt.springboot_2019_12_23;
++
++import org.junit.jupiter.api.Test;
++import org.junit.jupiter.api.extension.ExtendWith;
++import org.junit.jupiter.api.extension.Extensions;
++import org.springframework.beans.factory.annotation.Autowired;
++import org.springframework.boot.test.context.SpringBootTest;
++import org.springframework.context.annotation.Configuration;
++import org.springframework.test.context.ContextConfiguration;
++import org.springframework.test.context.junit.jupiter.SpringExtension;
++
++import java.util.Date;
++
++@SpringBootTest
++/*@ContextConfiguration(locations = "classpath:applicationContext.xml")
++@ExtendWith(SpringExtension.class)*/
++public class test {
++    @Autowired
++    Date myDate;
++
++    @Test
++    public void myDate(){
++        System.out.println(myDate);
++    }
++}
+Index: src/main/resources/application.yml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/resources/application.yml	(date 1577072909023)
++++ src/main/resources/application.yml	(date 1577072909023)
+@@ -0,0 +1,13 @@
++
++server:
++ port: 8888
++
++spring:
++ profiles: default
++ freemarker:
++  cache: false
++  content-type: text/html;charset=utf-8
++  expose-request-attributes: true
++  expose-session-attributes: true
++  request-context-attribute: request
++  suffix: .ftl
+\ No newline at end of file
+Index: src/main/java/com/wjt/springboot_2019_12_23/exception/BusinessException.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/java/com/wjt/springboot_2019_12_23/exception/BusinessException.java	(date 1577071926855)
++++ src/main/java/com/wjt/springboot_2019_12_23/exception/BusinessException.java	(date 1577071926855)
+@@ -0,0 +1,13 @@
++package com.wjt.springboot_2019_12_23.exception;
++
++import lombok.AllArgsConstructor;
++import lombok.Data;
++import lombok.NoArgsConstructor;
++
++@Data
++@AllArgsConstructor
++@NoArgsConstructor
++public class BusinessException extends RuntimeException{
++    private String code;
++    private String msg;
++}
+Index: src/main/java/com/wjt/springboot_2019_12_23/Springboot20191223Application.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/java/com/wjt/springboot_2019_12_23/Springboot20191223Application.java	(date 1577067731665)
++++ src/main/java/com/wjt/springboot_2019_12_23/Springboot20191223Application.java	(date 1577067731665)
+@@ -0,0 +1,13 @@
++package com.wjt.springboot_2019_12_23;
++
++import org.springframework.boot.SpringApplication;
++import org.springframework.boot.autoconfigure.SpringBootApplication;
++
++@SpringBootApplication
++public class Springboot20191223Application {
++
++    public static void main(String[] args) {
++        SpringApplication.run(Springboot20191223Application.class, args);
++    }
++
++}
